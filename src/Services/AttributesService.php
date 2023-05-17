@@ -30,36 +30,37 @@ class AttributesService
 {
     static array $baseFields = [
         "descriptionHtml",
-        "price",
-        "compare at price",
-        "tax code",
-        "cost per item",
-        "sku",
-        "barcode",
-        "Inventory policy",
-        "Available",
-        "Incoming",
-        "Committed",
-        "This is a physical product",
-        "weight",
-        "Country/Region of origin",
-        "HS code",
-        "Fulfillment service",
         "title",
+        "options",
+        "productType",
+        "vendor",
+        "tags",//array
+        "status",// "ACTIVE" "ARCHIVED" or "DRAFT"
     ];
 
     static array $fieldTypes = [
         "base product",
         "Images",
         "metafields",
-        "options",
         "variant options",
         "variant metafields",
-        "base variant"
+        "base variant",
+    ];
+
+    static array $variantFields = [
+        "cost",//productVariantInput.inventoryItem
+        "tracked",//productVariantInput.inventoryItem
+        "price",
+        "compareAtPrice",
+        "taxCode",
+        "sku",
+        "barcode",
+        "inventoryPolicy",//"CONTINUE" or "DENY"
     ];
 
     public function getRemoteFields(Graphql $client): array
     {
+        //get metafields
         $query = ShopifyGraphqlHelperService::buildMetafieldsQuery();
         $response = $client->query(["query" => $query])->getDecodedBody();
         foreach ($response["data"]["metafieldDefinitions"]["edges"] as $node) {
@@ -71,6 +72,16 @@ class AttributesService
         $response = $client->query(["query" => $query])->getDecodedBody();
         foreach ($response["data"]["metafieldDefinitions"]["edges"] as $node) {
             $data[] = ["name" => $node["node"]["namespace"] .  "." . $node["node"]["key"], "type" => "variant metafields", "fieldDefType" => $node["node"]["type"]["name"]];
+        }
+
+        //get base fields
+        foreach (self::$baseFields as $baseField) {
+            $data[] = ["name" => $baseField, "type" => "base product"];
+        }
+
+        //get base variant fields
+        foreach (self::$variantFields as $variantField) {
+            $data[] = ["name" => $variantField, "type" => "base variant"];
         }
         return $data;
     }
