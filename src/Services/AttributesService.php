@@ -59,6 +59,7 @@ class AttributesService
         "weight",
         "weightUnit",//needs to be "POUNDS" "OUNCES" "KILOGRAMS" or "GRAMS"
         "requiresShipping",
+        "imageSrc",//variants can only have one image
         "title",
     ];
 

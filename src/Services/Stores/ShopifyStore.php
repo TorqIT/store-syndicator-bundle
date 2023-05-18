@@ -266,6 +266,8 @@ class ShopifyStore extends BaseStore
                 if(!in_array($value[0], ["POUNDS", "OUNCES", "KILOGRAMS", "GRAMS"])){
                     throw new Exception("invalid weightUnit value $value[0] not one of POUNDS OUNCES KILOGRAMS or GRAMS");
                 }
+            }elseif($field == 'imageSrc'){
+                $value[0] = $value[0]->getFrontendFullPath();
             }elseif($field == 'title'){
                 $thisVariantArray["options"][] = $value[0];
                 continue;
