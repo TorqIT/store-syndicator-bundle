@@ -269,6 +269,11 @@ class ShopifyStore extends BaseStore
             }elseif($field == 'continueSellingOutOfStock'){
                 $thisVariantArray['inventoryPolicy'] = $value[0]? "CONTINUE": "DENY";
                 continue;
+            }elseif($field == 'weightUnit'){
+                $value[0] = strtoupper($value[0]);
+                if(!in_array($value[0], ["POUNDS", "OUNCES", "KILOGRAMS", "GRAMS"])){
+                    throw new Exception("invalid weightUnit value $value[0] not one of POUNDS OUNCES KILOGRAMS or GRAMS");
+                }
             }
             $thisVariantArray[$field] = $value[0];
         }

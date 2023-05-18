@@ -57,7 +57,7 @@ class AttributesService
         "barcode",
         "continueSellingOutOfStock",//inventoryPolicy "CONTINUE" or "DENY"
         "weight",
-        "weightUnit",
+        "weightUnit",//needs to be "POUNDS" "OUNCES" "KILOGRAMS" or "GRAMS"
         "requiresShipping"
     ];
 
