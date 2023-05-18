@@ -58,7 +58,8 @@ class AttributesService
         "continueSellingOutOfStock",//inventoryPolicy "CONTINUE" or "DENY"
         "weight",
         "weightUnit",//needs to be "POUNDS" "OUNCES" "KILOGRAMS" or "GRAMS"
-        "requiresShipping"
+        "requiresShipping",
+        "title",
     ];
 
     public function getRemoteFields(Graphql $client): array
