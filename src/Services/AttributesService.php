@@ -57,6 +57,7 @@ class AttributesService
         "barcode",
         "continueSellingOutOfStock",//inventoryPolicy "CONTINUE" or "DENY"
         "weight",
+        "weightUnit",
         "requiresShipping"
     ];
 
