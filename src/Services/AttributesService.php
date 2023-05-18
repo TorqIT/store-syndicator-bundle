@@ -57,7 +57,8 @@ class AttributesService
         "barcode",
         "continueSellingOutOfStock",//inventoryPolicy "CONTINUE" or "DENY"
         "weight",
-        "requiresShipping"
+        "requiresShipping",
+        "imageSrc",//variants can only have one image
     ];
 
     public function getRemoteFields(Graphql $client): array

@@ -269,6 +269,8 @@ class ShopifyStore extends BaseStore
             }elseif($field == 'continueSellingOutOfStock'){
                 $thisVariantArray['inventoryPolicy'] = $value[0]? "CONTINUE": "DENY";
                 continue;
+            }elseif($field == 'imageSrc'){
+                $value[0] = $value[0]->getFrontendFullPath();
             }
             $thisVariantArray[$field] = $value[0];
         }
