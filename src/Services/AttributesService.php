@@ -31,7 +31,7 @@ class AttributesService
     static array $baseFields = [
         "descriptionHtml",
         "title",
-        "options",
+        "options",//array
         "productType",
         "vendor",
         "tags",//array
@@ -42,7 +42,6 @@ class AttributesService
         "base product",
         "Images",
         "metafields",
-        "variant options",
         "variant metafields",
         "base variant",
     ];
@@ -53,9 +52,12 @@ class AttributesService
         "price",
         "compareAtPrice",
         "taxCode",
+        "taxable",
         "sku",
         "barcode",
-        "inventoryPolicy",//"CONTINUE" or "DENY"
+        "continueSellingOutOfStock",//inventoryPolicy "CONTINUE" or "DENY"
+        "weight",
+        "requiresShipping"
     ];
 
     public function getRemoteFields(Graphql $client): array
