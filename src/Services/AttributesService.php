@@ -59,6 +59,7 @@ class AttributesService
         "weight",
         "requiresShipping",
         "imageSrc",//variants can only have one image
+        "title",
     ];
 
     public function getRemoteFields(Graphql $client): array
