@@ -1,4 +1,3 @@
-# store-syndicator-bundle
 # Pimcore Store Syndicator Bundle
 
 Exports Pimcore objects into e-commerce storefronts such as Shopify.
