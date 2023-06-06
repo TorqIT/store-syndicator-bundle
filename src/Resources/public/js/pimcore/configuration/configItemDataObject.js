@@ -568,6 +568,8 @@ pimcore.plugin.storeExporterDataObject.configuration.configItemDataObject =
       // });
       let pickedDataobjects = this.objectWorkspace.getValues();
       productsData["products"] = pickedDataobjects;
+      let pickedExcludedDataObject = this.excludeObjectWorkspace.getValues();
+      productsData["excludeProducts"] = pickedExcludedDataObject;
       productsData["class"] = this.productsTab.getValues().class;
 
       saveData["general"] = this.generalForm.getValues();
