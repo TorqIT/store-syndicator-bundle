@@ -190,7 +190,7 @@ pimcore.plugin.storeExporterDataObject.configuration.configItemDataObject =
           this.objectWorkspace.getPanel(),
           {
             xtype: "label",
-            html: "<h3>Dont Export: </h3>",
+            html: "<h3>Don't Export: </h3>",
           },
           this.excludeObjectWorkspace.getPanel(),
         ],
