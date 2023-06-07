@@ -18,7 +18,7 @@ Currently, this bundle is designed to work only with a Shopify store, but could 
 4. Under the Choose Products tab, choose the Data Object class you will be exporting, and use the "To Export" and "Don't Export" sections to choose your products like follows:
    - Fill the "To Export" section with one or multiple folders or objects you wish to export.
    - Fill the "Don't Export" section with any exceptions in the "To Export" section
-   - This way it is possible to select your entire products folder and filter out any number of troublesome objects or folders
+   - This way it is possible to select your entire products folder and filter out any number of troublesome objects or folders it contains
 5. In the Map Attributes tab, fill in the table with the appropriate details:
    - The "local field" column refers to the field on your Pimcore Data Object class to export
    - The "field type" column refers to the store field type
