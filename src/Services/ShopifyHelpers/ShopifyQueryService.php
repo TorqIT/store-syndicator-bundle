@@ -37,6 +37,9 @@ class ShopifyQueryService
         }
         $formattedResults = [];
 
+        if ($resultFileURL == 'none') { //there were no variants returned (also not an error though)
+            return $formattedResults;
+        }
         $resultFile = fopen($resultFileURL, "r");
         while ($variantOrMetafield = fgets($resultFile)) {
             $variantOrMetafield = json_decode($variantOrMetafield, true);
@@ -68,6 +71,9 @@ class ShopifyQueryService
         }
         $formattedResults = [];
 
+        if ($resultFileURL == 'none') { //there were no products returned (also not an error though)
+            return $formattedResults;
+        }
         $resultFile = fopen($resultFileURL, "r");
         while ($productOrMetafield = fgets($resultFile)) {
             $productOrMetafield = (array)json_decode($productOrMetafield);
@@ -150,7 +156,9 @@ class ShopifyQueryService
                 while (!$resultFileURL = $this->queryFinished("MUTATION")) {
                     sleep(1);
                 }
-                $resultFiles[] = $resultFileURL;
+                if ($resultFileURL != 'none') { //there were no products returned (also not an error though)
+                    $resultFiles[] = $resultFileURL;
+                }
             }
         }
         if (fstat($file)["size"] > 0) {
@@ -165,7 +173,9 @@ class ShopifyQueryService
             while (!$resultFileURL = $this->queryFinished("MUTATION")) {
                 sleep(1);
             }
-            $resultFiles[] = $resultFileURL;
+            if ($resultFileURL != 'none') { //there were no products returned (also not an error though)
+                $resultFiles[] = $resultFileURL;
+            }
         }
 
         return $resultFiles;
@@ -210,7 +220,9 @@ class ShopifyQueryService
                 while (!$resultFileURL = $this->queryFinished("MUTATION")) {
                     sleep(1);
                 }
-                $resultFiles[] = $resultFileURL;
+                if ($resultFileURL != 'none') { //there were no variants returned (also not an error though)
+                    $resultFiles[] = $resultFileURL;
+                }
             }
         }
         if (fstat($file)["size"] > 0) { //if there are any variants in here
@@ -225,7 +237,9 @@ class ShopifyQueryService
             while (!$resultFileURL = $this->queryFinished("MUTATION")) {
                 sleep(1);
             }
-            $resultFiles[] = $resultFileURL;
+            if ($resultFileURL != 'none') { //there were no variants returned (also not an error though)
+                $resultFiles[] = $resultFileURL;
+            }
         }
         return $resultFiles;
     }
@@ -248,7 +262,9 @@ class ShopifyQueryService
                 while (!$resultFileURL = $this->queryFinished("MUTATION")) {
                     sleep(1);
                 }
-                $resultFiles[] = $resultFileURL;
+                if ($resultFileURL != 'none') { //there were no metafields returned (also not an error though)
+                    $resultFiles[] = $resultFileURL;
+                }
             }
         }
         if (fstat($file)["size"] > 0) { //if there are any variants in here
@@ -263,7 +279,9 @@ class ShopifyQueryService
             while (!$resultFileURL = $this->queryFinished("MUTATION")) {
                 sleep(1);
             }
-            $resultFiles[] = $resultFileURL;
+            if ($resultFileURL != 'none') { //there were no metafields returned (also not an error though)
+                $resultFiles[] = $resultFileURL;
+            }
         }
         return $resultFiles;
     }
