@@ -25,6 +25,7 @@ class ExecutionService
     private Configuration $config;
     private string $classType;
     private BaseStore $storeInterface;
+    private array $filters;
 
     public function __construct(ShopifyStore $storeInterface)
     {
@@ -36,29 +37,19 @@ class ExecutionService
         $this->config = $config;
         $configData = $this->config->getConfiguration();
         $this->storeInterface->setup($config);
-        // try {
-        //     $this->storeInterface = StoreFactory::getStore($this->config);
-        // } catch (Exception $e) {
-        //     $results = new CommitResult();
-        //     $results->addError("error during init: " . $e->getMessage() . "\nTrace: " . $e->getTraceAsString());
-        //     return $results;
-        // }
 
-
-        $productPaths = $configData["products"]["products"];
         $this->classType = $configData["products"]["class"];
-
         $this->classType = "Pimcore\\Model\\DataObject\\" . $this->classType;
 
+        $this->filters = $this->buildFilterArray($configData);
+
+        $productsToExport = $this->buildExportArray($configData);
+
         $rejects = []; //array of products we cant export
-        foreach ($productPaths as $pathArray) {
-            $path = $pathArray["cpath"];
-            $products = DataObject::getByPath($path);
-            $products = $products->getChildren([DataObject::OBJECT_TYPE_OBJECT, DataObject::OBJECT_TYPE_FOLDER], true);
-            foreach ($products as $product) {
-                $this->recursiveExport($product, $rejects);
-            }
+        foreach ($productsToExport as $productToExport) {
+            $this->recursiveExport($productToExport, $rejects);
         }
+
         $results = $this->storeInterface->commit();
         $results->addError("products with over 100 variants: " . json_encode($rejects));
         return $results;
@@ -89,7 +80,42 @@ class ExecutionService
         $products = $dataObject->getChildren([DataObject::OBJECT_TYPE_OBJECT, DataObject::OBJECT_TYPE_FOLDER], true);
 
         foreach ($products as $product) {
-            $this->recursiveExport($product, $rejects);
+            if (!in_array($product->getRealFullPath(), $this->filters)) {
+                $this->recursiveExport($product, $rejects);
+            }
         }
+    }
+
+    private function buildFilterArray(array $configData): array
+    {
+        $filterArray = [];
+        foreach ($configData["products"]['excludeProducts'] ?? [] as $array) {
+            $filterArray[] = $array["cpath"];
+        }
+        return $filterArray;
+    }
+
+    private function buildExportArray(array $configData)
+    {
+        $productPaths = $configData["products"]["products"];
+
+        $toExport = [];
+        foreach ($productPaths as $pathArray) {
+            $path = $pathArray["cpath"];
+            if ($objectOrFolder = DataObject::getByPath($path)) {
+                $toExport[] = $objectOrFolder;
+            } //could throw error here "object not found at path"
+        }
+        return array_filter($toExport, array($this, "filter"));
+    }
+
+    private function filter(DataObject $object)
+    {
+        do {
+            if (in_array($object->getRealFullPath(), $this->filters)) {
+                return false;
+            }
+        } while ($object = $object->getParent());
+        return true;
     }
 }
