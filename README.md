@@ -19,6 +19,7 @@ Currently, this bundle is designed to work only with a Shopify store, but could 
    - Fill the "To Export" section with one or multiple folders or objects you wish to export.
    - Fill the "Don't Export" section with any exceptions in the "To Export" section
    - This way it is possible to select your entire products folder and filter out any number of troublesome objects or folders it contains
+   <img width="473" alt="image" src="https://github.com/TorqIT/store-syndicator-bundle/assets/105230931/0af78272-8e84-4e0e-ac43-d1f271262996">
 5. In the Map Attributes tab, fill in the table with the appropriate details:
    - The "local field" column refers to the field on your Pimcore Data Object class to export
    - The "field type" column refers to the store field type
