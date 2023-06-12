@@ -268,6 +268,13 @@ class ShopifyQueryService
         return $resultFiles;
     }
 
+    public function getPrimaryStoreLocationId()
+    {
+        $query = ShopifyGraphqlHelperService::buildStoreLocationQuery();
+        $result = $this->runQuery($query);
+        return $result["data"]["location"]["id"];
+    }
+
     private function makeFile($content)
     {
         $file = tmpfile();

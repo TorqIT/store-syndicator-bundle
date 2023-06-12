@@ -17,6 +17,7 @@ class ShopifyGraphqlHelperService
     private static $UPDATE_VARIANTS_QUERY = '/shopify-queries/update-product-variants.graphql';
     private static $GET_VARIANTS_QUERY = '/shopify-queries/variants-query.graphql';
     private static $SET_METAFIELD_QUERY = '/shopify-queries/metafield-set-value.graphql';
+    private static $GET_STORE_LOCATION_QUERY = '/shopify-queries/store-location-query.graphql';
 
     public static function buildCreateProductsQuery($remoteFile)
     {
@@ -117,5 +118,11 @@ class ShopifyGraphqlHelperService
     {
         $updateVariantsQuery = file_get_contents(dirname(__FILE__) . self::$SET_METAFIELD_QUERY);
         return self::bulkwrap($updateVariantsQuery, $remoteFile);
+    }
+
+    public static function buildStoreLocationQuery()
+    {
+        $storeLocationQuery = file_get_contents(dirname(__FILE__) . self::$GET_STORE_LOCATION_QUERY);
+        return $storeLocationQuery;
     }
 }
