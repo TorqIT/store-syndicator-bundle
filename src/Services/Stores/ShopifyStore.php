@@ -37,6 +37,7 @@ class ShopifyStore extends BaseStore
     private array $updateImageMap;
     private array $metafieldTypeDefinitions;
     private array $storeLocationId;
+    private array $updateStock;
     // private array $productMetafieldsMapping;
     //private array $variantMetafieldsMapping;
 
@@ -243,6 +244,9 @@ class ShopifyStore extends BaseStore
 
         $thisVariantArray = [];
         $this->processBaseVariantData($fields['base variant'], $thisVariantArray);
+        if (isset($fields['base variant']['stock'])) {
+            $this->updateStock[$remoteId] = $fields['base variant']['stock'][0];
+        }
         if (!isset($thisVariantArray["options"])) {
             $thisVariantArray["options"][] = $child->getKey();
         }
@@ -404,6 +408,13 @@ class ShopifyStore extends BaseStore
                 }
             } catch (Exception $e) {
                 $commitResults->addError("error during metafield setting in commit: " . $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString());
+            }
+        }
+        if ($this->updateStock) {
+            try {
+                $this->shopifyQueryService->updateStock($this->updateStock, $this->storeLocationId);
+            } catch (Exception $e) {
+                $commitResults->addError("error during stock update in commit: " . $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString());
             }
         }
         $this->config->save();
