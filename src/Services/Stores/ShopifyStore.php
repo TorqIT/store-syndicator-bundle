@@ -211,7 +211,6 @@ class ShopifyStore extends BaseStore
         if (isset($fields['base variant']['stock'])) {
             $graphQLInput["inventoryQuantities"]["availableQuantity"] = $fields['base variant']['stock'][0];
             $graphQLInput["inventoryQuantities"]["locationId"] = $this->storeLocationId;
-            continue;
         }
         if (!isset($graphQLInput["options"])) {
             $graphQLInput["options"][] = $child->getKey();
@@ -256,6 +255,9 @@ class ShopifyStore extends BaseStore
     private function processBaseVariantData($fields, &$thisVariantArray)
     {
         foreach ($fields as $field => $value) {
+            if ($field == "stock") { // special cases
+                continue;
+            }
             if ($field == 'weight' || $field == 'cost' || $field == 'price') { //wants this as a non-string wrapped number
                 $value[0] = (float)$value[0];
             }
