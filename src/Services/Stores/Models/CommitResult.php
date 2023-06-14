@@ -3,10 +3,10 @@
 namespace TorqIT\StoreSyndicatorBundle\Services\Stores\Models;
 
 use Pimcore\Model\DataObject\Concrete;
+use TorqIT\StoreSyndicatorBundle\Services\Stores\Models\LogRow;
 
 class CommitResult
 {
-
     /**
      * @var Concrete[] $updated 
      */
@@ -17,9 +17,10 @@ class CommitResult
      */
     private array $created;
 
-    /** @var String[] $errors */
+    /** @var LogRow[] $errors */
     private array $errors;
 
+    /** @var LogRow[] $logs */
     private array $logs;
 
     public function __construct()
@@ -53,9 +54,9 @@ class CommitResult
     /**
      * Add a error
      *
-     * @param string $error
+     * @param LogRow $error
      */
-    public function addError(string $error)
+    public function addError(LogRow $error)
     {
         $this->errors[] = $error;
     }
@@ -63,7 +64,7 @@ class CommitResult
     /**
      * Get the value of errors
      *
-     * @return array
+     * @return LogRow[]
      */
     public function getErrors(): array
     {
@@ -73,9 +74,9 @@ class CommitResult
     /**
      * Add a logs
      *
-     * @param array $logs
+     * @param LogRow $logs
      */
-    public function addLog(string $log)
+    public function addLog(LogRow $log)
     {
         $this->logs[] = $log;
     }
@@ -83,7 +84,7 @@ class CommitResult
     /**
      * Get the value of logs
      *
-     * @return array
+     * @return LogRow[]
      */
     public function getLogs(): array
     {
