@@ -178,12 +178,12 @@ class ShopifyStore extends BaseStore
     private function processBaseProductData($fields, &$graphQLInput)
     {
         foreach ($fields as $field => $value) {
-            if($field == "status"){
+            if ($field == "status") {
                 $value[0] = strtoupper($value[0]);
-                if(!in_array($value[0], ["ACTIVE", "ARCHIVED", "DRAFT"])){
+                if (!in_array($value[0], ["ACTIVE", "ARCHIVED", "DRAFT"])) {
                     throw new Exception("invalid status value $value[0] not one of ACTIVE ARCHIVED or DRAFT");
                 }
-            }elseif($field == 'tags'){
+            } elseif ($field == 'tags') {
                 $graphQLInput[$field] = $value;
                 continue;
             }
@@ -246,28 +246,29 @@ class ShopifyStore extends BaseStore
         $this->updateVariantsArrays[] = $thisVariantArray;
     }
 
-    private function processBaseVariantData($fields, &$thisVariantArray){
+    private function processBaseVariantData($fields, &$thisVariantArray)
+    {
         foreach ($fields as $field => $value) {
             if ($field == 'weight' || $field == 'cost' || $field == 'price') { //wants this as a non-string wrapped number
                 $value[0] = (float)$value[0];
             }
-            if($field == 'tracked'){
+            if ($field == 'tracked') {
                 $value[0] = $value[0] == "true";
             }
-            if($field == 'cost' || $field == 'tracked'){
+            if ($field == 'cost' || $field == 'tracked') {
                 $thisVariantArray['inventoryItem'][$field] = $value[0];
                 continue;
-            }elseif($field == 'continueSellingOutOfStock'){
-                $thisVariantArray['inventoryPolicy'] = $value[0]? "CONTINUE": "DENY";
+            } elseif ($field == 'continueSellingOutOfStock') {
+                $thisVariantArray['inventoryPolicy'] = $value[0] ? "CONTINUE" : "DENY";
                 continue;
-            }elseif($field == 'weightUnit'){
+            } elseif ($field == 'weightUnit') {
                 $value[0] = strtoupper($value[0]);
-                if(!in_array($value[0], ["POUNDS", "OUNCES", "KILOGRAMS", "GRAMS"])){
+                if (!in_array($value[0], ["POUNDS", "OUNCES", "KILOGRAMS", "GRAMS"])) {
                     throw new Exception("invalid weightUnit value $value[0] not one of POUNDS OUNCES KILOGRAMS or GRAMS");
                 }
-            }elseif($field == 'imageSrc'){
+            } elseif ($field == 'imageSrc') {
                 $value[0] = $value[0]->getFrontendFullPath();
-            }elseif($field == 'title'){
+            } elseif ($field == 'title') {
                 $thisVariantArray["options"][] = $value[0];
                 continue;
             }
