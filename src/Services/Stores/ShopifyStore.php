@@ -36,7 +36,7 @@ class ShopifyStore extends BaseStore
     private array $metafieldSetArrays;
     private array $updateImageMap;
     private array $metafieldTypeDefinitions;
-    private array $storeLocationId;
+    private string $storeLocationId;
     private array $updateStock;
     // private array $productMetafieldsMapping;
     //private array $variantMetafieldsMapping;
@@ -72,6 +72,7 @@ class ShopifyStore extends BaseStore
         $this->updateVariantsArrays = [];
         $this->metafieldSetArrays = [];
         $this->updateImageMap = [];
+        $this->updateStock = [];
 
         Db::get()->query('SET SESSION wait_timeout = ' . 28800); //timeout to 8 hours for this session
     }
@@ -210,7 +211,7 @@ class ShopifyStore extends BaseStore
 
         $this->processBaseVariantData($fields['base variant'], $graphQLInput);
         if (isset($fields['base variant']['stock'])) {
-            $graphQLInput["inventoryQuantities"]["availableQuantity"] = $fields['base variant']['stock'][0];
+            $graphQLInput["inventoryQuantities"]["availableQuantity"] = (float)$fields['base variant']['stock'][0];
             $graphQLInput["inventoryQuantities"]["locationId"] = $this->storeLocationId;
         }
         if (!isset($graphQLInput["options"])) {
@@ -412,7 +413,8 @@ class ShopifyStore extends BaseStore
         }
         if ($this->updateStock) {
             try {
-                $this->shopifyQueryService->updateStock($this->updateStock, $this->storeLocationId);
+                $results = $this->shopifyQueryService->updateStock($this->updateStock, $this->storeLocationId);
+                $this->addLogRow("update stock results: ", json_encode($results));
             } catch (Exception $e) {
                 $commitResults->addError("error during stock update in commit: " . $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString());
             }

@@ -272,6 +272,7 @@ class ShopifyQueryService
     {
         $variantsByIdQuery = ShopifyGraphqlHelperService::buildVariantsStockByIdQuery();
         $variantsUpdateInventoryQuery = ShopifyGraphqlHelperService::buildUpdateVariantsStockQuery();
+        $results = [];
         $variantsQueryInput = [];
         $variantsInventoryInput = [];
         $changes = [];
@@ -298,6 +299,7 @@ class ShopifyQueryService
                     ]
                 ];
                 $response = $this->runQuery($variantsUpdateInventoryQuery, $variantsInventoryInput);
+                $results[] = $response;
                 unset($variantsQueryInput);
             }
         }
@@ -319,9 +321,10 @@ class ShopifyQueryService
                 ]
             ];
             $response = $this->runQuery($variantsUpdateInventoryQuery, $variantsInventoryInput);
+            $results[] = $response;
             unset($variantsQueryInput);
         }
-        //https://shopify.dev/docs/api/usage/rate-limits#maximum-input-array-size-limit
+        return $results;
     }
 
     public function getPrimaryStoreLocationId()
