@@ -20,11 +20,14 @@ class CommitResult
     /** @var String[] $errors */
     private array $errors;
 
+    private array $logs;
+
     public function __construct()
     {
-        $this->updated = array();
-        $this->created = array();
-        $this->errors = array();
+        $this->updated = [];
+        $this->created = [];
+        $this->errors = [];
+        $this->logs = [];
     }
 
     public function addCreated(Concrete $object)
@@ -48,7 +51,7 @@ class CommitResult
     }
 
     /**
-     * Set the value of errors
+     * Add a error
      *
      * @param string $error
      */
@@ -65,5 +68,25 @@ class CommitResult
     public function getErrors(): array
     {
         return $this->errors;
+    }
+
+    /**
+     * Add a logs
+     *
+     * @param array $logs
+     */
+    public function addLog(string $log)
+    {
+        $this->logs[] = $log;
+    }
+
+    /**
+     * Get the value of logs
+     *
+     * @return array
+     */
+    public function getLogs(): array
+    {
+        return $this->logs;
     }
 }
