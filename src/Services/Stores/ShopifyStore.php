@@ -57,9 +57,6 @@ class ShopifyStore extends BaseStore
         $this->propertyName = "TorqSS:" . $remoteStoreName . ":shopifyId";
 
         $configData = $this->config->getConfiguration();
-        $configData["ExportLogs"] = [];
-        $this->config->setConfiguration($configData);
-        $this->config->save();
 
         $authenticator = ShopifyAuthenticator::getAuthenticatorFromConfig($config);
         $this->shopifyQueryService = new ShopifyQueryService($authenticator);
@@ -398,7 +395,6 @@ class ShopifyStore extends BaseStore
                 $commitResults->addError(new LogRow("error during metafield setting in commit", $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString()));
             }
         }
-        $this->config->save();
         $this->shopifyProductLinkingService->link($this->config, $changesStartTime);
         return $commitResults;
     }

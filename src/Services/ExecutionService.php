@@ -39,6 +39,10 @@ class ExecutionService
         $configData = $this->config->getConfiguration();
         $this->storeInterface->setup($config);
 
+        $configData["ExportLogs"] = [];
+        $this->config->setConfiguration($configData);
+        $this->config->save();
+
         $classType = $configData["products"]["class"];
         $classType = ClassDefinition::getById($classType);
         $this->classType = "Pimcore\\Model\\DataObject\\" . ucfirst($classType->getName());
@@ -63,7 +67,7 @@ class ExecutionService
             $configData["ExportLogs"][] = $log->generateRow();
         }
         $this->config->setConfiguration($configData);
-
+        $this->config->save();
 
         return $results;
     }
