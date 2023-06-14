@@ -360,7 +360,6 @@ class ShopifyStore extends BaseStore
             try {
                 $resultFiles = $this->shopifyQueryService->createProducts($this->createProductArrays);
                 foreach ($resultFiles as $resultFileURL) {
-                    $this->addLogRow("create product & variant result file", $resultFileURL);
                     $commitResults->addLog(new LogRow("create product & variant result file", $resultFileURL));
                 }
             } catch (Exception $e) {
@@ -372,7 +371,6 @@ class ShopifyStore extends BaseStore
         if ($this->updateProductArrays) {
             try {
                 $resultFileURL = $this->shopifyQueryService->updateProducts($this->updateProductArrays);
-                $this->addLogRow("update products result file", $resultFileURL);
                 $commitResults->addLog(new LogRow("update products result file", $resultFileURL));
             } catch (Exception $e) {
                 $commitResults->addError(new LogRow("error during product updating in commit", $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString()));
@@ -383,7 +381,6 @@ class ShopifyStore extends BaseStore
             try {
                 $resultFiles = $this->shopifyQueryService->updateVariants($this->updateVariantsArrays);
                 foreach ($resultFiles as $resultFileURL) {
-                    $this->addLogRow("update variant result file", $resultFileURL);
                     $commitResults->addLog(new LogRow("update variant result file", $resultFileURL));
                 }
             } catch (Exception $e) {
@@ -395,7 +392,6 @@ class ShopifyStore extends BaseStore
             try {
                 $resultFiles = $this->shopifyQueryService->updateMetafields($this->metafieldSetArrays);
                 foreach ($resultFiles as $resultFileURL) {
-                    $this->addLogRow("update metafield result file", $resultFileURL);
                     $commitResults->addLog(new LogRow("update metafield result file", $resultFileURL));
                 }
             } catch (Exception $e) {

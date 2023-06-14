@@ -34,4 +34,9 @@ class LogRow
     {
         return $this->log;
     }
+
+    public function generateRow(): array
+    {
+        return ["comment" => $this->label, "log" => $this->log];
+    }
 }
