@@ -13,6 +13,8 @@ use TorqIT\StoreSyndicatorBundle\Services\ShopifyHelpers\ShopifyGraphqlHelperSer
  */
 class ShopifyQueryService
 {
+    const MAX_QUERY_OBJS = 250;
+
     private Graphql $graphql;
     public function __construct(
         ShopifyAuthenticator $abstractAuthenticator
@@ -271,7 +273,7 @@ class ShopifyQueryService
         foreach ($inputArray as $id => $quantity) {
             $variantsQueryInput["ids"][] = $id;
             $count++;
-            if ($count >= 250) {
+            if ($count >= self::MAX_QUERY_OBJS) {
                 $count = 0;
                 $changes = [];
                 $response = $this->runQuery($variantsByIdQuery, $variantsQueryInput);
