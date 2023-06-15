@@ -24,6 +24,7 @@ use TorqIT\StoreSyndicatorBundle\Services\Authenticators\AbstractAuthenticator;
 use TorqIT\StoreSyndicatorBundle\Services\Configuration\ConfigurationRepository;
 use TorqIT\StoreSyndicatorBundle\Services\ShopifyHelpers\ShopifyGraphqlHelperService;
 use TorqIT\StoreSyndicatorBundle\Services\ShopifyHelpers\ShopifyProductLinkingService;
+use TorqIT\StoreSyndicatorBundle\Services\Stores\Models\LogRow;
 
 class ShopifyStore extends BaseStore
 {
@@ -58,9 +59,6 @@ class ShopifyStore extends BaseStore
         $this->propertyName = "TorqSS:" . $remoteStoreName . ":shopifyId";
 
         $configData = $this->config->getConfiguration();
-        $configData["ExportLogs"] = [];
-        $this->config->setConfiguration($configData);
-        $this->config->save();
 
         $authenticator = ShopifyAuthenticator::getAuthenticatorFromConfig($config);
         $this->shopifyQueryService = new ShopifyQueryService($authenticator);
@@ -364,7 +362,7 @@ class ShopifyStore extends BaseStore
                     }
                 }
             } catch (Exception $e) {
-                $commitResults->addError("error during image pushing in commit: " . $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString());
+                $commitResults->addError(new LogRow("error during image pushing in commit", $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString()));
             }
         }
 
@@ -373,10 +371,10 @@ class ShopifyStore extends BaseStore
             try {
                 $resultFiles = $this->shopifyQueryService->createProducts($this->createProductArrays);
                 foreach ($resultFiles as $resultFileURL) {
-                    $this->addLogRow("create product & variant result file", $resultFileURL);
+                    $commitResults->addLog(new LogRow("create product & variant result file", $resultFileURL));
                 }
             } catch (Exception $e) {
-                $commitResults->addError("error during product creating in commit: " . $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString());
+                $commitResults->addError(new LogRow("error during product creating in commit", $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString()));
             }
         }
 
@@ -384,9 +382,9 @@ class ShopifyStore extends BaseStore
         if ($this->updateProductArrays) {
             try {
                 $resultFileURL = $this->shopifyQueryService->updateProducts($this->updateProductArrays);
-                $this->addLogRow("update products result file", $resultFileURL);
+                $commitResults->addLog(new LogRow("update products result file", $resultFileURL));
             } catch (Exception $e) {
-                $commitResults->addError("error during product updating in commit: " . $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString());
+                $commitResults->addError(new LogRow("error during product updating in commit", $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString()));
             }
         }
 
@@ -394,10 +392,10 @@ class ShopifyStore extends BaseStore
             try {
                 $resultFiles = $this->shopifyQueryService->updateVariants($this->updateVariantsArrays);
                 foreach ($resultFiles as $resultFileURL) {
-                    $this->addLogRow("update variant result file", $resultFileURL);
+                    $commitResults->addLog(new LogRow("update variant result file", $resultFileURL));
                 }
             } catch (Exception $e) {
-                $commitResults->addError("error during variant updating in commit: " . $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString());
+                $commitResults->addError(new LogRow("error during variant updating in commit", $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString()));
             }
         }
 
@@ -405,21 +403,20 @@ class ShopifyStore extends BaseStore
             try {
                 $resultFiles = $this->shopifyQueryService->updateMetafields($this->metafieldSetArrays);
                 foreach ($resultFiles as $resultFileURL) {
-                    $this->addLogRow("update metafield result file", $resultFileURL);
+                    $commitResults->addLog(new LogRow("update metafield result file", $resultFileURL));
                 }
             } catch (Exception $e) {
-                $commitResults->addError("error during metafield setting in commit: " . $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString());
+                $commitResults->addError(new LogRow("error during metafield setting in commit", $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString()));
             }
         }
         if ($this->updateStock) {
             try {
                 $results = $this->shopifyQueryService->updateStock($this->updateStock, $this->storeLocationId);
-                $this->addLogRow("update stock results: ", json_encode($results));
+                $commitResults->addLog(new LogRow("update stock results", json_encode($results)));
             } catch (Exception $e) {
-                $commitResults->addError("error during stock update in commit: " . $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString());
+                $commitResults->addError(new LogRow("error during stock update in commit", $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString()));
             }
         }
-        $this->config->save();
         $this->shopifyProductLinkingService->link($this->config, $changesStartTime);
         return $commitResults;
     }
