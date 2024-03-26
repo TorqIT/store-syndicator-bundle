@@ -13,6 +13,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use TorqIT\StoreSyndicatorBundle\Services\Configuration\ConfigurationService;
+use \Pimcore\Cache;
 
 class RemoveShopifyPropertiesCommand extends AbstractCommand
 {
@@ -37,9 +38,13 @@ class RemoveShopifyPropertiesCommand extends AbstractCommand
         $remoteStoreName = $this->configurationService->getStoreName($config);
         $shopifyIdPropertyName = "TorqSS:" . $remoteStoreName . ":shopifyId";
         $linkedPropertyName = "TorqSS:" . $remoteStoreName . ":linked";
+        $remoteLastUpdatedProperty = "TorqSS:" . $remoteStoreName . ":lastUpdated";
+        $remoteInventoryIdProperty = "TorqSS:" . $remoteStoreName . ":inventoryId";
         $db = Db::get();
 
-        $result = $db->executeStatement('Delete from properties where name IN (?, ?, ?)', [$shopifyIdPropertyName, $linkedPropertyName, 'ShopifyImageURL']);
-        return 0;
+        $result = $db->executeStatement('Delete from properties where name IN (?, ?, ?, ?, ?)', [$shopifyIdPropertyName, $linkedPropertyName, 'ShopifyImageURL', $remoteLastUpdatedProperty, $remoteInventoryIdProperty]);
+        Cache::clearAll();
+
+        return self::SUCCESS;
     }
 }

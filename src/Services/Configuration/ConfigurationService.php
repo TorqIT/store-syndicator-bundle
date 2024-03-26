@@ -19,7 +19,7 @@ class ConfigurationService
      *
      * @throws \Exception
      */
-    public function prepareConfiguration(string $configName, $currentConfig = null, $ignorePermissions = false)
+    public function prepareConfiguration(string $configName, $currentConfig = null, $ignorePermissions = false): array
     {
         if ($currentConfig) {
             if (is_string($currentConfig)) {
@@ -72,17 +72,17 @@ class ConfigurationService
 
     public static function getMapOnRow(Configuration $configuration): array
     {
-        $configuration = $configuration->getConfiguration();
-        foreach ($configuration['attributeMap'] as $attributeMap) {
-            if (isset($attributeMap['map on']) && $attributeMap['map on']) {
-                return $attributeMap;
-            }
-        }
+        // $configuration = $configuration->getConfiguration();
+        // foreach ($configuration['attributeMap'] as $attributeMap) {
+        //     if (isset($attributeMap['map on']) && $attributeMap['map on']) {
+        //         return $attributeMap;
+        //     }
+        // }
         return [
             'local field' => 'Id',
             'remote field' => 'custom.pimcore_id',
             'id' => 'extModel323-22',
-            'field type' => 'variant metafields'
+            'field type' => 'pimcoreIdMetafield'
         ];
     }
 }
