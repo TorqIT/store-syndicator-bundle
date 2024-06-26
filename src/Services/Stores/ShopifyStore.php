@@ -209,7 +209,9 @@ class ShopifyStore extends BaseStore
             $graphQLInput["metafields"][] = $this->createMetafield($attribute, $this->metafieldTypeDefinitions["variant"]);
         }
 
-        $this->processBaseVariantData($fields['base variant'], $graphQLInput);
+        if(array_key_exists('base variant', $fields)){
+            $this->processBaseVariantData($fields['base variant'], $graphQLInput);
+        }
         if (isset($fields['base variant']['stock'])) {
             $graphQLInput["inventoryQuantities"]["availableQuantity"] = (float)$fields['base variant']['stock'][0];
             $graphQLInput["inventoryQuantities"]["locationId"] = $this->storeLocationId;
