@@ -60,7 +60,7 @@ class ConfigurationService
         $config = $configuration->getConfiguration();
 
         $class = $config["products"]["class"];
-        return ClassDefinition::getByName($class);
+        return ClassDefinition::getById($class);
     }
 
     public static function getStoreName(Configuration $configuration)
