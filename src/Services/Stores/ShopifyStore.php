@@ -173,7 +173,9 @@ class ShopifyStore extends BaseStore
             }
             unset($fields["Images"]);
         }
-        $this->processBaseProductData($fields['base product'], $graphQLInput);
+        if (array_key_exists('base product', $fields)) {
+            $this->processBaseProductData($fields['base product'], $graphQLInput);
+        }
         $this->createProductArrays[$object->getId()] = $graphQLInput;
     }
 
