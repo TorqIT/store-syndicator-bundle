@@ -189,7 +189,7 @@ pimcore.plugin.storeExporterDataObject.configuration.configItemDataObject =
     buildAttributeMappingTab: function () {
       if (!this.attributeStore) {
         this.attributeStore = Ext.create("Ext.data.Store", {
-          fields: ["Local Field", "Field Type", "Remote Field", "Map On"],
+          fields: ["Local Field", "Field Type", "Remote Field", "Mapping ID"],
           data: this.data.attributeMap,
           pageSize: 0,
         });
@@ -341,8 +341,8 @@ pimcore.plugin.storeExporterDataObject.configuration.configItemDataObject =
           },
           {
             xtype: "checkcolumn",
-            text: "Map On",
-            dataIndex: "Map On",
+            text: "Mapping ID",
+            dataIndex: "Mapping ID",
             width: 70,
             tooltip: t(
               "plugin_pimcore_datahub_configpanel_item_map_on_header_tip"
@@ -374,7 +374,7 @@ pimcore.plugin.storeExporterDataObject.configuration.configItemDataObject =
                 store = store.getStore();
                 store.each(function (allRecords) {
                   if (allRecords.id != record.id) {
-                    allRecords.set("Map On", false);
+                    allRecords.set("Mapping ID", false);
                   }
                 });
               },

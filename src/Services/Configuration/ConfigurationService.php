@@ -74,7 +74,7 @@ class ConfigurationService
     {
         $configuration = $configuration->getConfiguration();
         foreach ($configuration['attributeMap'] as $attributeMap) {
-            if (isset($attributeMap['Map On']) && $attributeMap['Map On']) {
+            if (isset($attributeMap['Mapping ID']) && $attributeMap['Mapping ID']) {
                 return $attributeMap;
             }
         }

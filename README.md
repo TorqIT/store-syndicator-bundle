@@ -25,7 +25,7 @@ Currently, this bundle is designed to work only with a Shopify store, but could 
    - The "Local Field" column refers to the field on your Pimcore Data Object class to export
    - The "Field Type" column refers to the store Field Type
    - The "Remote Field" column refers to the field in your store
-   - Check the "Map On" checkbox for any fields that should be unique on all exported variants
+   - Check the "Mapping ID" checkbox for any fields that should be unique on all exported variants
 
 ### Running an export:
 
