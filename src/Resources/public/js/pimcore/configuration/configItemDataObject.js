@@ -149,7 +149,7 @@ pimcore.plugin.storeExporterDataObject.configuration.configItemDataObject =
         items: [
           {
             xtype: "combobox",
-            fieldLabel: t("BaseClass"),
+            fieldLabel: t("plugin_pimcore_datahub_configpanel_item_product_type_to_syndicate"),
             name: "class",
             value: this.data.products.class ?? "",
             store: this.classStore,
@@ -163,6 +163,22 @@ pimcore.plugin.storeExporterDataObject.configuration.configItemDataObject =
             name: "sqlCondition",
             fieldLabel: t(
               "plugin_pimcore_datahub_configpanel_item_products_sql"
+            ),
+          },
+          {
+            xtype: "checkbox",
+            value: this.data ? this.data.products.includeUnpublished : "",
+            name: "includeUnpublished",
+            fieldLabel: t(
+              "plugin_pimcore_datahub_configpanel_item_include_unpublished"
+            ),
+          },
+          {
+            xtype: "checkbox",
+            value: this.data ? this.data.products.updatedOnly : "",
+            name: "updatedOnly",
+            fieldLabel: t(
+              "plugin_pimcore_datahub_configpanel_item_updated_only"
             ),
           },
         ],
@@ -541,6 +557,8 @@ pimcore.plugin.storeExporterDataObject.configuration.configItemDataObject =
 
       productsData["class"] = this.productsTab.getValues().class;
       productsData["sqlCondition"] = this.productsTab.getValues().sqlCondition;
+      productsData["includeUnpublished"] = this.productsTab.getValues().includeUnpublished == 'on';
+      productsData["updatedOnly"] = this.productsTab.getValues().updatedOnly == 'on';
 
       saveData["general"] = this.generalForm.getValues();
 

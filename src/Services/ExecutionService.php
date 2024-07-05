@@ -103,6 +103,9 @@ class ExecutionService
         /** @var Dataobject\Listing $listing */
         $listing->setObjectTypes(['object']);
         $listing->setCondition($sql);
+        if (array_key_exists("includeUnpublished", $configData)) {
+            $listing->setUnpublished($configData["includeUnpublished"]);
+        }
         return $listing;
     }
 }

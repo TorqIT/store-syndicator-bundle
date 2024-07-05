@@ -4,6 +4,7 @@ plugin_pimcore_datahub_configpanel_item_remote_header_tip: Choose the remote att
 plugin_pimcore_datahub_configpanel_item_remote_type_header_tip: Choose the type of the remote field like metafield or variant metafield
 plugin_pimcore_datahub_configpanel_item_map_on_header_tip: Choose this option if products should be linked to their remote object based on this attribute
 plugin_pimcore_datahub_configpanel_item_access: API Access
+plugin_pimcore_datahub_configpanel_item_product_type_to_syndicate: Product Type to Syndicate
 plugin_pimcore_datahub_configpanel_item_shopify_host: Shopify Host URL
 plugin_pimcore_datahub_configpanel_item_shopify_token: API Access Token
 plugin_pimcore_datahub_configpanel_item_shopify_key: API Key
@@ -13,3 +14,5 @@ plugin_pimcore_datahub_configpanel_item_products: Choose Products
 plugin_pimcore_datahub_configpanel_item_execution: Execution
 plugin_pimcore_datahub_configpanel_item_manual_execute: Manual Start
 plugin_pimcore_datahub_configpanel_item_products_sql: Product Query Where Clause
+plugin_pimcore_datahub_configpanel_item_include_unpublished: Inlcude unpublished products
+plugin_pimcore_datahub_configpanel_item_updated_only: Include only updated products
