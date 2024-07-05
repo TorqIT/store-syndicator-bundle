@@ -278,7 +278,6 @@ pimcore.plugin.storeExporterDataObject.configuration.configItemDataObject =
           },
         ],
         store: this.attributeStore,
-        width: "700",
         columns: [
           {
             text: "Local Field",
@@ -405,7 +404,6 @@ pimcore.plugin.storeExporterDataObject.configuration.configItemDataObject =
           labelWidth: 200,
           width: 700,
         },
-        border: false,
         title: t("plugin_pimcore_datahub_configpanel_item_attribute_mapping"),
         items: [grid],
         buttons: [
