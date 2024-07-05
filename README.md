@@ -22,10 +22,10 @@ Currently, this bundle is designed to work only with a Shopify store, but could 
       - `o_path LIKE "your products folder path"` for path based exports
       - `fieldName = value` for object field based export
 5. In the Map Attributes tab, fill in the table with the appropriate details:
-   - The "local field" column refers to the field on your Pimcore Data Object class to export
-   - The "field type" column refers to the store field type
-   - The "remote field" column refers to the field in your store
-   - Check the "map on" checkbox for any fields that should be unique on all exported variants
+   - The "Local Field" column refers to the field on your Pimcore Data Object class to export
+   - The "Field Type" column refers to the store Field Type
+   - The "Remote Field" column refers to the field in your store
+   - Check the "Map On" checkbox for any fields that should be unique on all exported variants
 
 ### Running an export:
 

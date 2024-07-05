@@ -54,9 +54,9 @@ abstract class BaseStore implements StoreInterface
         $attributeMap = $this->config->getConfiguration()["attributeMap"];
         $returnMap = [];
         foreach ($attributeMap as $row) {
-            $fieldType = $row['field type'];
-            $localAttribute = $row['local field'];
-            $remoteAttribute = $row['remote field'];
+            $fieldType = $row['Field Type'];
+            $localAttribute = $row['Local Field'];
+            $remoteAttribute = $row['Remote Field'];
             //getting local value of field
             $localFieldPath = explode(".", $localAttribute);
             $remoteFieldPath = explode(".", $remoteAttribute);

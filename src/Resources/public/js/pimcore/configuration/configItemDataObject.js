@@ -189,7 +189,7 @@ pimcore.plugin.storeExporterDataObject.configuration.configItemDataObject =
     buildAttributeMappingTab: function () {
       if (!this.attributeStore) {
         this.attributeStore = Ext.create("Ext.data.Store", {
-          fields: ["local field", "field type", "remote field", "map on"],
+          fields: ["Local Field", "Field Type", "Remote Field", "Map On"],
           data: this.data.attributeMap,
           pageSize: 0,
         });
@@ -272,17 +272,17 @@ pimcore.plugin.storeExporterDataObject.configuration.configItemDataObject =
           {
             text: "Add Mapping",
             handler: function () {
-              let rec = { "local field": "", "remote field": "" };
+              let rec = { "Local Field": "", "Remote Field": "" };
               this.attributeStore.insert(0, rec);
             }.bind(this),
           },
         ],
         store: this.attributeStore,
-        width: "auto",
+        width: "700",
         columns: [
           {
-            text: "local field",
-            dataIndex: "local field",
+            text: "Local Field",
+            dataIndex: "Local Field",
             width: 200,
             editor: {
               xtype: "combobox",
@@ -297,8 +297,8 @@ pimcore.plugin.storeExporterDataObject.configuration.configItemDataObject =
             },
           },
           {
-            text: "field type",
-            dataIndex: "field type",
+            text: "Field Type",
+            dataIndex: "Field Type",
             width: 200,
             tooltip: t(
               "plugin_pimcore_datahub_configpanel_item_remote_type_header_tip"
@@ -315,8 +315,8 @@ pimcore.plugin.storeExporterDataObject.configuration.configItemDataObject =
             },
           },
           {
-            text: "remote field",
-            dataIndex: "remote field",
+            text: "Remote Field",
+            dataIndex: "Remote Field",
             width: 200,
             tooltip: t(
               "plugin_pimcore_datahub_configpanel_item_remote_header_tip"
@@ -332,7 +332,7 @@ pimcore.plugin.storeExporterDataObject.configuration.configItemDataObject =
                   combo.store.clearFilter();
                   var type = combo
                     .up("grid")
-                    .editingPlugin.activeRecord.get("field type");
+                    .editingPlugin.activeRecord.get("Field Type");
                   combo.store.filterBy(function (record) {
                     return record.get("type") == type;
                   });
@@ -342,8 +342,8 @@ pimcore.plugin.storeExporterDataObject.configuration.configItemDataObject =
           },
           {
             xtype: "checkcolumn",
-            text: "map on",
-            dataIndex: "map on",
+            text: "Map On",
+            dataIndex: "Map On",
             width: 70,
             tooltip: t(
               "plugin_pimcore_datahub_configpanel_item_map_on_header_tip"
@@ -358,7 +358,7 @@ pimcore.plugin.storeExporterDataObject.configuration.configItemDataObject =
                 eOpts
               ) {
                 var allowedMapOnTypes = ["variant metafields", "base variant"];
-                if (!allowedMapOnTypes.includes(record.get("field type"))) {
+                if (!allowedMapOnTypes.includes(record.get("Field Type"))) {
                   Ext.toast("Please Select a variant property");
                   return false;
                 }
@@ -375,7 +375,7 @@ pimcore.plugin.storeExporterDataObject.configuration.configItemDataObject =
                 store = store.getStore();
                 store.each(function (allRecords) {
                   if (allRecords.id != record.id) {
-                    allRecords.set("map on", false);
+                    allRecords.set("Map On", false);
                   }
                 });
               },
@@ -403,7 +403,7 @@ pimcore.plugin.storeExporterDataObject.configuration.configItemDataObject =
         autoScroll: true,
         defaults: {
           labelWidth: 200,
-          width: 600,
+          width: 700,
         },
         border: false,
         title: t("plugin_pimcore_datahub_configpanel_item_attribute_mapping"),
