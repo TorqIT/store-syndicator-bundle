@@ -358,9 +358,9 @@ class ShopifyStore extends BaseStore
                     }
                 }
             } catch (Exception $e) {
-                $this->applicationLogger->error("error during image pushing in commit", [
-                    'component' => StoreSyndicatorBundle::LOGGER_COMPONENT_PREFIX . $this->config->getName(),
-                    "info" => $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString()
+                $message = $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString();
+                $this->applicationLogger->error("error during image pushing in commit\n" . $message, [
+                    'component' => StoreSyndicatorBundle::LOGGER_COMPONENT_PREFIX . $this->config->getName()
                 ]);
             }
         }
@@ -370,15 +370,14 @@ class ShopifyStore extends BaseStore
             try {
                 $resultFiles = $this->shopifyQueryService->createProducts($this->createProductArrays);
                 foreach ($resultFiles as $resultFileURL) {
-                    $this->applicationLogger->info("create product & variant result file", [
+                    $this->applicationLogger->info("create product & variant result file: $resultFileURL", [
                         'component' => StoreSyndicatorBundle::LOGGER_COMPONENT_PREFIX . $this->config->getName(),
-                        "file url" => $resultFileURL
                     ]);
                 }
             } catch (Exception $e) {
-                $this->applicationLogger->error("error during product creating in commit", [
+                $message = $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString();
+                $this->applicationLogger->error("error during product creating in commit\n" . $message, [
                     'component' => StoreSyndicatorBundle::LOGGER_COMPONENT_PREFIX . $this->config->getName(),
-                    "info" => $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString()
                 ]);
             }
         }
@@ -387,14 +386,13 @@ class ShopifyStore extends BaseStore
         if ($this->updateProductArrays) {
             try {
                 $resultFileURL = $this->shopifyQueryService->updateProducts($this->updateProductArrays);
-                $this->applicationLogger->info("update products result file", [
+                $this->applicationLogger->info("update products result file: $resultFileURL", [
                     'component' => StoreSyndicatorBundle::LOGGER_COMPONENT_PREFIX . $this->config->getName(),
-                    "file url" => $resultFileURL
                 ]);
             } catch (Exception $e) {
-                $this->applicationLogger->error("error during product updating in commit", [
+                $message = $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString();
+                $this->applicationLogger->error("error during product updating in commit\n" . $message, [
                     'component' => StoreSyndicatorBundle::LOGGER_COMPONENT_PREFIX . $this->config->getName(),
-                    "info" => $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString()
                 ]);
             }
         }
@@ -403,15 +401,14 @@ class ShopifyStore extends BaseStore
             try {
                 $resultFiles = $this->shopifyQueryService->updateVariants($this->updateVariantsArrays);
                 foreach ($resultFiles as $resultFileURL) {
-                    $this->applicationLogger->info("update variant result file", [
+                    $this->applicationLogger->info("update variant result file: $resultFileURL", [
                         'component' => StoreSyndicatorBundle::LOGGER_COMPONENT_PREFIX . $this->config->getName(),
-                        "file url" => $resultFileURL
                     ]);
                 }
             } catch (Exception $e) {
-                $this->applicationLogger->error("error during variant updating in commit", [
+                $message = $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString();
+                $this->applicationLogger->error("error during variant updating in commit\n " . $message, [
                     'component' => StoreSyndicatorBundle::LOGGER_COMPONENT_PREFIX . $this->config->getName(),
-                    "info" => $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString()
                 ]);
             }
         }
@@ -420,29 +417,27 @@ class ShopifyStore extends BaseStore
             try {
                 $resultFiles = $this->shopifyQueryService->updateMetafields($this->metafieldSetArrays);
                 foreach ($resultFiles as $resultFileURL) {
-                    $this->applicationLogger->info("update metafield result file", [
+                    $this->applicationLogger->info("update metafield result file: $resultFileURL", [
                         'component' => StoreSyndicatorBundle::LOGGER_COMPONENT_PREFIX . $this->config->getName(),
-                        "file url" => $resultFileURL
                     ]);
                 }
             } catch (Exception $e) {
-                $this->applicationLogger->error("error during metafield setting in commit", [
+                $message = $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString();
+                $this->applicationLogger->error("error during metafield setting in commit\n" . $message, [
                     'component' => StoreSyndicatorBundle::LOGGER_COMPONENT_PREFIX . $this->config->getName(),
-                    "info" => $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString()
                 ]);
             }
         }
         if ($this->updateStock) {
             try {
                 $results = $this->shopifyQueryService->updateStock($this->updateStock, $this->storeLocationId);
-                $this->applicationLogger->info("update stock results", [
+                $this->applicationLogger->info("update stock results: " . json_encode($results), [
                     'component' => StoreSyndicatorBundle::LOGGER_COMPONENT_PREFIX . $this->config->getName(),
-                    "results" => json_encode($results)
                 ]);
             } catch (Exception $e) {
-                $this->applicationLogger->error("error during stock update in commit", [
+                $message = $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString();
+                $this->applicationLogger->error("error during stock update in commit\n" . $message, [
                     'component' => StoreSyndicatorBundle::LOGGER_COMPONENT_PREFIX . $this->config->getName(),
-                    "info" => $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString()
                 ]);
             }
         }
