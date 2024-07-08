@@ -79,16 +79,21 @@ pimcore.plugin.storeExporterDataObject.configuration.configItemDataObject =
       let manualExecute = Ext.create("Ext.Button", {
         text: t("plugin_pimcore_datahub_configpanel_item_manual_execute"),
         handler: function () {
-            let url = Routing.generate(
+          pimcore.helpers.showNotification(
+            t("plugin_pimcore_datahub_configpanel_item_started"),
+            t("plugin_pimcore_datahub_configpanel_item_started_subtext"),
+            "success"
+          );
+          let url = Routing.generate(
             "pimcore_storesyndicator_execution_execute"
-            );
-            Ext.Ajax.request({
+          );
+          Ext.Ajax.request({
             url: url,
             method: "POST",
             params: {
-                name: this.data.general.name,
+              name: this.data.general.name,
             },
-            });
+          });
         }.bind(this),
       });
       footer.add(manualExecute);
