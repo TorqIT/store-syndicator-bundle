@@ -76,6 +76,23 @@ pimcore.plugin.storeExporterDataObject.configuration.configItemDataObject =
 
       footer.add("->");
 
+      let manualExecute = Ext.create("Ext.Button", {
+        text: t("plugin_pimcore_datahub_configpanel_item_manual_execute"),
+        handler: function () {
+            let url = Routing.generate(
+            "pimcore_storesyndicator_execution_execute"
+            );
+            Ext.Ajax.request({
+            url: url,
+            method: "POST",
+            params: {
+                name: this.data.general.name,
+            },
+            });
+        }.bind(this),
+      });
+      footer.add(manualExecute);
+
       let saveButtonConfig = {
         text: t("save"),
         iconCls: "pimcore_icon_apply",
@@ -440,62 +457,48 @@ pimcore.plugin.storeExporterDataObject.configuration.configItemDataObject =
       return this.accessForm;
     },
     buildExecutionTab: function () {
-      let manualExecute = Ext.create("Ext.Button", {
-        text: t("plugin_pimcore_datahub_configpanel_item_manual_execute"),
-        handler: function () {
-          let url = Routing.generate(
-            "pimcore_storesyndicator_execution_execute"
-          );
-          Ext.Ajax.request({
-            url: url,
-            method: "POST",
-            params: {
-              name: this.data.general.name,
-            },
-          });
-        }.bind(this),
-      });
-      if (!this.logStore) {
-        this.logStore = Ext.create("Ext.data.Store", {
-          fields: ["comment", "log"],
-          data: this.data.ExportLogs ?? [],
-          pageSize: 0,
-        });
-      }
-      let logPanel = Ext.create("Ext.grid.Panel", {
-        store: this.logStore,
-        viewConfig: {
-          forceFit: true,
-          enableTextSelection: true,
-        },
-        columns: [
-          {
-            text: "Log Comment",
-            dataIndex: "comment",
-            columnWidth: "5%",
-          },
-          {
-            text: "Log",
-            dataIndex: "log",
-            renderer: function (value, metaData) {
-              return '<div style="white-space:normal">' + value + "</div>";
-            },
-          },
-        ],
-      });
-      this.executionForm = Ext.create("Ext.form.FormPanel", {
-        bodyStyle: "padding:10px;",
-        autoScroll: true,
-        defaults: {
-          labelWidth: 200,
-          forceFit: true,
-        },
-        border: false,
-        title: t("plugin_pimcore_datahub_configpanel_item_execution"),
-        //add some config for cron
-        items: [manualExecute, logPanel],
-      });
-      return this.executionForm;
+      let loggertab = new pimcore.plugin.storeExporterDataObject.helpers.logTab(this.configName);
+      // if (!this.logStore) {
+      //   this.logStore = Ext.create("Ext.data.Store", {
+      //     fields: ["comment", "log"],
+      //     data: this.data.ExportLogs ?? [],
+      //     pageSize: 0,
+      //   });
+      // }
+      // let logPanel = Ext.create("Ext.grid.Panel", {
+      //   store: this.logStore,
+      //   viewConfig: {
+      //     forceFit: true,
+      //     enableTextSelection: true,
+      //   },
+      //   columns: [
+      //     {
+      //       text: "Log Comment",
+      //       dataIndex: "comment",
+      //       columnWidth: "5%",
+      //     },
+      //     {
+      //       text: "Log",
+      //       dataIndex: "log",
+      //       renderer: function (value, metaData) {
+      //         return '<div style="white-space:normal">' + value + "</div>";
+      //       },
+      //     },
+      //   ],
+      // });
+      // this.executionForm = Ext.create("Ext.form.FormPanel", {
+      //   bodyStyle: "padding:10px;",
+      //   autoScroll: true,
+      //   defaults: {
+      //     labelWidth: 200,
+      //     forceFit: true,
+      //   },
+      //   border: false,
+      //   title: t("plugin_pimcore_datahub_configpanel_item_execution"),
+      //   //add some config for cron
+      //   items: [manualExecute, logPanel],
+      // });
+      return loggertab.getTabPanel();
     },
     save: function () {
       var saveData = this.getSaveData();

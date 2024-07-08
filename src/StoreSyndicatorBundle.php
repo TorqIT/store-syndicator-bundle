@@ -45,7 +45,8 @@ class StoreSyndicatorBundle extends AbstractPimcoreBundle implements PimcoreBund
             '/bundles/storesyndicator/js/pimcore/configuration/configItemDataObject.js',
             '/bundles/storesyndicator/js/pimcore/helpers/objectTree.js',
             '/bundles/storesyndicator/js/pimcore/helpers/workspacePicker.js',
-            '/bundles/storesyndicator/js/pimcore/helpers/APIObjectsPicker.js'
+            '/bundles/storesyndicator/js/pimcore/helpers/APIObjectsPicker.js',
+            '/bundles/storesyndicator/js/pimcore/helpers/ApplicationLoggerTab.js'
         ];
     }
 
