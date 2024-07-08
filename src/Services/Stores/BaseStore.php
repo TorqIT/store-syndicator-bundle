@@ -6,6 +6,7 @@ use Exception;
 use Pimcore\Model\Asset;
 use Pimcore\Model\Asset\Image;
 use PhpParser\Node\Expr\Cast\Bool_;
+use Pimcore\Bundle\ApplicationLoggerBundle\ApplicationLogger;
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\Localizedfield;
 use Pimcore\Bundle\DataHubBundle\Configuration;
@@ -21,7 +22,7 @@ abstract class BaseStore implements StoreInterface
 {
     protected string $propertyName = "Default";
     protected Configuration $config;
-    abstract public function __construct(ConfigurationRepository $configurationRepository, ConfigurationService $configurationService);
+    abstract public function __construct(ConfigurationRepository $configurationRepository, ConfigurationService $configurationService, ApplicationLogger $applicationLogger);
     abstract public function setup(Configuration $config);
     abstract public function getAllProducts();
 
@@ -36,7 +37,7 @@ abstract class BaseStore implements StoreInterface
      *
      * @param Webstore $webstore to webstore with the product mapping
      **/
-    abstract public function commit(): Models\CommitResult;
+    abstract public function commit(): void;
 
     public function getStoreProductId(Concrete $object): string|null
     {

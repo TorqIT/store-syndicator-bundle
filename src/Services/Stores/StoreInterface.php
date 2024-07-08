@@ -12,7 +12,7 @@ interface StoreInterface
      *
      * @param Webstore $webstore to webstore with the product mapping
      **/
-    public function commit(): Models\CommitResult;
+    public function commit(): void;
 
     public function existsInStore(Concrete $object): bool;
 
