@@ -2,7 +2,7 @@ pimcore.registerNS("pimcore.plugin.storeExporterDataObject.helpers.logTab");
 
 pimcore.plugin.storeExporterDataObject.helpers.logTab = Class.create(pimcore.bundle.applicationlogger.log.admin, {
 
-    componentPrefix: 'STORE-SYNDICATOR ',
+    componentPrefix: 'STORE_SYNDICATOR ',
 
     initialize: function($super, configName) {
         $super({
