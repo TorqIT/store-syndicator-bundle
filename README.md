@@ -24,12 +24,20 @@ Currently, this bundle is designed to work only with a Shopify store, but could 
 5. In the Map Attributes tab, fill in the table with the appropriate details:
    - The "Local Field" column refers to the field on your Pimcore Data Object class to export
    - The "Field Type" column refers to the store Field Type
-   - The "Remote Field" column refers to the field in your store
-   - Check the "Mapping ID" checkbox for any fields that should be unique on all exported variants
+     - Base Product: information on the main product. Including Title, Description, vendor, and status.
+     - Images: files that will be uploaded and found in the product media section.
+     - Metafields: custom created shopify fields defined on the main product
+     - Variant Metafields: custom created shopify fields defined on the variants
+     - Base Variant: similar to Base Product, fields found on all shopify variants. Fields include pricing, inventory, and shipping information.
+   - The "Remote Field" column refers to the field name in your store. Only available options, limited by the type of the local field and the selected field type , are listed.
+   - if there is a pimcore variant attribute that should be used
 
 ### Running an export:
 
 In a terminal, run the command `bin/console torq:push-to-shopify "your-store-name"`. If you expect this export to take longer than a few minutes (or you are exporting more than a few thousand variants), wrap the command with `nohup` as follows to ensure the process continues running if your terminal session ends unexpectedly: `nohup bin/console torq:push-to-shopify "your-store-name" &`.
+
+If you would like the command to run on set intervals you can add a line to your projects crontab file.
+You can also use [Crontab Guru](https://crontab.guru/) for help with creating your cron configuration.
 
 ### Viewing Results:
 
