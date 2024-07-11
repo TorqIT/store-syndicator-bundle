@@ -60,7 +60,7 @@ class ConfigurationService
         $config = $configuration->getConfiguration();
 
         $class = $config["products"]["class"];
-        return ClassDefinition::getByName($class);
+        return ClassDefinition::getById($class);
     }
 
     public static function getStoreName(Configuration $configuration)
@@ -74,15 +74,15 @@ class ConfigurationService
     {
         $configuration = $configuration->getConfiguration();
         foreach ($configuration['attributeMap'] as $attributeMap) {
-            if (isset($attributeMap['map on']) && $attributeMap['map on']) {
+            if (isset($attributeMap['Mapping ID']) && $attributeMap['Mapping ID']) {
                 return $attributeMap;
             }
         }
         return [
-            'local field' => 'Id',
-            'remote field' => 'custom.pimcore_id',
+            'Local Field' => 'Id',
+            'Remote Field' => 'custom.pimcore_id',
             'id' => 'extModel323-22',
-            'field type' => 'variant metafields'
+            'Field Type' => 'variant metafields'
         ];
     }
 }

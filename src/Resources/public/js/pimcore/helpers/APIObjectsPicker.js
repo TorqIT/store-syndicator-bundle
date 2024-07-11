@@ -1,6 +1,7 @@
 pimcore.registerNS("pimcore.plugin.storeExporterDataObject.helpers.workspace.apiObjects");
 pimcore.plugin.storeExporterDataObject.helpers.workspace.apiObjects = Class.create(pimcore.plugin.datahub.workspace.abstract, {
 
+    availableRights : [],
     type: "object",
     initialize: function (parent) {
         this.parent = parent;

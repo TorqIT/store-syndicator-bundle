@@ -4,17 +4,13 @@ namespace Services;
 
 namespace TorqIT\StoreSyndicatorBundle\Services;
 
-use Exception;
+use Pimcore\Bundle\ApplicationLoggerBundle\ApplicationLogger;
 use Pimcore\Model\DataObject;
 use Pimcore\Model\DataObject\Concrete;
 use Pimcore\Model\DataObject\ClassDefinition;
 use Pimcore\Bundle\DataHubBundle\Configuration;
 use TorqIT\StoreSyndicatorBundle\Services\Stores\BaseStore;
 use TorqIT\StoreSyndicatorBundle\Services\Stores\ShopifyStore;
-use TorqIT\StoreSyndicatorBundle\Services\Stores\StoreFactory;
-use TorqIT\StoreSyndicatorBundle\Services\Stores\StoreInterface;
-use TorqIT\StoreSyndicatorBundle\Services\Stores\Models\CommitResult;
-use TorqIT\StoreSyndicatorBundle\Services\Stores\Models\LogRow;
 
 /*
     Gets the correct StoreInterface from the config file.
@@ -28,7 +24,7 @@ class ExecutionService
     private string $classType;
     private BaseStore $storeInterface;
 
-    public function __construct(ShopifyStore $storeInterface)
+    public function __construct(ShopifyStore $storeInterface, private ApplicationLogger $applicationLogger)
     {
         $this->storeInterface = $storeInterface;
     }
@@ -39,7 +35,6 @@ class ExecutionService
         $configData = $this->config->getConfiguration();
         $this->storeInterface->setup($config);
 
-        $configData["ExportLogs"] = [];
         $this->config->setConfiguration($configData);
         $this->config->save();
 
@@ -55,21 +50,10 @@ class ExecutionService
                 $this->proccess($product, $rejects);
             }
         }
-        $results = $this->storeInterface->commit();
-        $results->addError(new LogRow("products not exported due to having over 100 variants", json_encode($rejects)));
+        $this->storeInterface->commit();
 
-        //save errors and logs
-        $configData = $this->config->getConfiguration();
-        foreach ($results->getErrors() as $error) {
-            $configData["ExportLogs"][] = $error->generateRow();
-        }
-        foreach ($results->getLogs() as $log) {
-            $configData["ExportLogs"][] = $log->generateRow();
-        }
         $this->config->setConfiguration($configData);
         $this->config->save();
-
-        return $results;
     }
 
     private function proccess($dataObject, &$rejects)
@@ -103,6 +87,9 @@ class ExecutionService
         /** @var Dataobject\Listing $listing */
         $listing->setObjectTypes(['object']);
         $listing->setCondition($sql);
+        if (array_key_exists("includeUnpublished", $configData)) {
+            $listing->setUnpublished($configData["includeUnpublished"]);
+        }
         return $listing;
     }
 }

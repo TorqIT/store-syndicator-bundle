@@ -58,7 +58,7 @@ class ShopifyProductLinkingService
         /*
         *   run variant query
         */
-        switch ($linkingAttribute['field type']) {
+        switch ($linkingAttribute['Field Type']) {
             case 'variant metafields':
                 $remoteVariants = $shopifyQueryService->queryVariants(ShopifyGraphqlHelperService::buildVariantsQuery($afterDate));
                 /*
@@ -69,7 +69,7 @@ class ShopifyProductLinkingService
                 foreach ($remoteVariants as $variantId => $remoteVariant) {
                     if (array_key_exists('metafields', $remoteVariant)) {
                         foreach ($remoteVariant['metafields'] as $namespaceAndKey => $metafield) {
-                            if ($namespaceAndKey == $linkingAttribute['remote field']) {
+                            if ($namespaceAndKey == $linkingAttribute['Remote Field']) {
                                 if (array_key_exists($metafield['value'], $mapOnArray)) {
                                     $mapOnArray[$metafield['value']] = 'duplicate';
                                 }
@@ -112,7 +112,7 @@ class ShopifyProductLinkingService
             if (!$object = DataObject::getById($unlinked)) {
                 throw new Exception('tried to get object with id= ' . $unlinked);
             }
-            if (!$localFieldValue = AttributesService::getObjectFieldValues($object, explode('.', $linkingAttribute['local field']))) {
+            if (!$localFieldValue = AttributesService::getObjectFieldValues($object, explode('.', $linkingAttribute['Local Field']))) {
                 continue;
             }
             if (array_key_exists($localFieldValue, $mapOnArray)) {

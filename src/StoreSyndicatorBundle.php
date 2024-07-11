@@ -4,17 +4,22 @@ namespace TorqIT\StoreSyndicatorBundle;
 
 use League\FlysystemBundle\FlysystemBundle;
 use Pimcore\Extension\Bundle\AbstractPimcoreBundle;
-use Pimcore\Extension\Bundle\Installer\InstallerInterface;
-use Pimcore\Extension\Bundle\Traits\PackageVersionTrait;
 use Pimcore\HttpKernel\Bundle\DependentBundleInterface;
+use Pimcore\Extension\Bundle\Traits\PackageVersionTrait;
 use Pimcore\HttpKernel\BundleCollection\BundleCollection;
+use Pimcore\Extension\Bundle\Installer\InstallerInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Pimcore\Extension\Bundle\PimcoreBundleAdminClassicInterface;
 
-class StoreSyndicatorBundle extends AbstractPimcoreBundle implements DependentBundleInterface
+class StoreSyndicatorBundle extends AbstractPimcoreBundle implements PimcoreBundleAdminClassicInterface
 {
     use PackageVersionTrait;
 
     const LOGGER_COMPONENT_PREFIX = 'STORE_SYNDICATOR ';
+
+    public function getEditmodeJsPaths(): array { return []; }
+
+    public function getEditmodeCssPaths(): array { return []; }
 
     protected function getComposerPackageName(): string
     {
@@ -40,7 +45,8 @@ class StoreSyndicatorBundle extends AbstractPimcoreBundle implements DependentBu
             '/bundles/storesyndicator/js/pimcore/configuration/configItemDataObject.js',
             '/bundles/storesyndicator/js/pimcore/helpers/objectTree.js',
             '/bundles/storesyndicator/js/pimcore/helpers/workspacePicker.js',
-            '/bundles/storesyndicator/js/pimcore/helpers/APIObjectsPicker.js'
+            '/bundles/storesyndicator/js/pimcore/helpers/APIObjectsPicker.js',
+            '/bundles/storesyndicator/js/pimcore/helpers/ApplicationLoggerTab.js'
         ];
     }
 

@@ -6,25 +6,17 @@ use DateTime;
 use Exception;
 use Pimcore\Db;
 use DateTimeZone;
-use Shopify\Context;
-use Shopify\Auth\Session;
-use Shopify\Clients\Graphql;
-use Pimcore\Model\DataObject;
+use Pimcore\Bundle\ApplicationLoggerBundle\ApplicationLogger;
 use Pimcore\Model\Asset\Image;
-use Shopify\Auth\FileSessionStorage;
 use Pimcore\Model\DataObject\Concrete;
-use Shopify\Rest\Admin2023_01\Product;
 use Pimcore\Bundle\DataHubBundle\Configuration;
-use Shopify\Exception\RestResourceRequestException;
 use TorqIT\StoreSyndicatorBundle\Services\AttributesService;
 use TorqIT\StoreSyndicatorBundle\Services\Configuration\ConfigurationService;
 use TorqIT\StoreSyndicatorBundle\Services\ShopifyHelpers\ShopifyQueryService;
 use TorqIT\StoreSyndicatorBundle\Services\Authenticators\ShopifyAuthenticator;
-use TorqIT\StoreSyndicatorBundle\Services\Authenticators\AbstractAuthenticator;
 use TorqIT\StoreSyndicatorBundle\Services\Configuration\ConfigurationRepository;
-use TorqIT\StoreSyndicatorBundle\Services\ShopifyHelpers\ShopifyGraphqlHelperService;
 use TorqIT\StoreSyndicatorBundle\Services\ShopifyHelpers\ShopifyProductLinkingService;
-use TorqIT\StoreSyndicatorBundle\Services\Stores\Models\LogRow;
+use TorqIT\StoreSyndicatorBundle\StoreSyndicatorBundle;
 
 class ShopifyStore extends BaseStore
 {
@@ -47,6 +39,7 @@ class ShopifyStore extends BaseStore
     public function __construct(
         private ConfigurationRepository $configurationRepository,
         private ConfigurationService $configurationService,
+        private ApplicationLogger $applicationLogger,
     ) {
         $this->attributeService = new AttributesService();
         $this->shopifyProductLinkingService = new ShopifyProductLinkingService($configurationRepository, $configurationService);
@@ -173,7 +166,9 @@ class ShopifyStore extends BaseStore
             }
             unset($fields["Images"]);
         }
-        $this->processBaseProductData($fields['base product'], $graphQLInput);
+        if (array_key_exists('base product', $fields)) {
+            $this->processBaseProductData($fields['base product'], $graphQLInput);
+        }
         $this->createProductArrays[$object->getId()] = $graphQLInput;
     }
 
@@ -207,7 +202,9 @@ class ShopifyStore extends BaseStore
             $graphQLInput["metafields"][] = $this->createMetafield($attribute, $this->metafieldTypeDefinitions["variant"]);
         }
 
-        $this->processBaseVariantData($fields['base variant'], $graphQLInput);
+        if (array_key_exists('base variant', $fields)) {
+            $this->processBaseVariantData($fields['base variant'], $graphQLInput);
+        }
         if (isset($fields['base variant']['stock'])) {
             $graphQLInput["inventoryQuantities"]["availableQuantity"] = (float)$fields['base variant']['stock'][0];
             $graphQLInput["inventoryQuantities"]["locationId"] = $this->storeLocationId;
@@ -308,9 +305,8 @@ class ShopifyStore extends BaseStore
         return $tmpMetafield;
     }
 
-    public function commit(): Models\CommitResult
+    public function commit(): void
     {
-        $commitResults = new Models\CommitResult();
         $changesStartTime = new DateTime('now',  new DateTimeZone("UTC"));
 
         //upload new images and add the src to 
@@ -362,7 +358,10 @@ class ShopifyStore extends BaseStore
                     }
                 }
             } catch (Exception $e) {
-                $commitResults->addError(new LogRow("error during image pushing in commit", $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString()));
+                $message = $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString();
+                $this->applicationLogger->error("error during image pushing in commit\n" . $message, [
+                    'component' => StoreSyndicatorBundle::LOGGER_COMPONENT_PREFIX . $this->config->getName()
+                ]);
             }
         }
 
@@ -371,10 +370,15 @@ class ShopifyStore extends BaseStore
             try {
                 $resultFiles = $this->shopifyQueryService->createProducts($this->createProductArrays);
                 foreach ($resultFiles as $resultFileURL) {
-                    $commitResults->addLog(new LogRow("create product & variant result file", $resultFileURL));
+                    $this->applicationLogger->info("create product & variant result file: $resultFileURL", [
+                        'component' => StoreSyndicatorBundle::LOGGER_COMPONENT_PREFIX . $this->config->getName(),
+                    ]);
                 }
             } catch (Exception $e) {
-                $commitResults->addError(new LogRow("error during product creating in commit", $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString()));
+                $message = $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString();
+                $this->applicationLogger->error("error during product creating in commit\n" . $message, [
+                    'component' => StoreSyndicatorBundle::LOGGER_COMPONENT_PREFIX . $this->config->getName(),
+                ]);
             }
         }
 
@@ -382,9 +386,14 @@ class ShopifyStore extends BaseStore
         if ($this->updateProductArrays) {
             try {
                 $resultFileURL = $this->shopifyQueryService->updateProducts($this->updateProductArrays);
-                $commitResults->addLog(new LogRow("update products result file", $resultFileURL));
+                $this->applicationLogger->info("update products result file: $resultFileURL", [
+                    'component' => StoreSyndicatorBundle::LOGGER_COMPONENT_PREFIX . $this->config->getName(),
+                ]);
             } catch (Exception $e) {
-                $commitResults->addError(new LogRow("error during product updating in commit", $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString()));
+                $message = $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString();
+                $this->applicationLogger->error("error during product updating in commit\n" . $message, [
+                    'component' => StoreSyndicatorBundle::LOGGER_COMPONENT_PREFIX . $this->config->getName(),
+                ]);
             }
         }
 
@@ -392,10 +401,15 @@ class ShopifyStore extends BaseStore
             try {
                 $resultFiles = $this->shopifyQueryService->updateVariants($this->updateVariantsArrays);
                 foreach ($resultFiles as $resultFileURL) {
-                    $commitResults->addLog(new LogRow("update variant result file", $resultFileURL));
+                    $this->applicationLogger->info("update variant result file: $resultFileURL", [
+                        'component' => StoreSyndicatorBundle::LOGGER_COMPONENT_PREFIX . $this->config->getName(),
+                    ]);
                 }
             } catch (Exception $e) {
-                $commitResults->addError(new LogRow("error during variant updating in commit", $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString()));
+                $message = $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString();
+                $this->applicationLogger->error("error during variant updating in commit\n " . $message, [
+                    'component' => StoreSyndicatorBundle::LOGGER_COMPONENT_PREFIX . $this->config->getName(),
+                ]);
             }
         }
 
@@ -403,21 +417,30 @@ class ShopifyStore extends BaseStore
             try {
                 $resultFiles = $this->shopifyQueryService->updateMetafields($this->metafieldSetArrays);
                 foreach ($resultFiles as $resultFileURL) {
-                    $commitResults->addLog(new LogRow("update metafield result file", $resultFileURL));
+                    $this->applicationLogger->info("update metafield result file: $resultFileURL", [
+                        'component' => StoreSyndicatorBundle::LOGGER_COMPONENT_PREFIX . $this->config->getName(),
+                    ]);
                 }
             } catch (Exception $e) {
-                $commitResults->addError(new LogRow("error during metafield setting in commit", $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString()));
+                $message = $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString();
+                $this->applicationLogger->error("error during metafield setting in commit\n" . $message, [
+                    'component' => StoreSyndicatorBundle::LOGGER_COMPONENT_PREFIX . $this->config->getName(),
+                ]);
             }
         }
         if ($this->updateStock) {
             try {
                 $results = $this->shopifyQueryService->updateStock($this->updateStock, $this->storeLocationId);
-                $commitResults->addLog(new LogRow("update stock results", json_encode($results)));
+                $this->applicationLogger->info("update stock results: " . json_encode($results), [
+                    'component' => StoreSyndicatorBundle::LOGGER_COMPONENT_PREFIX . $this->config->getName(),
+                ]);
             } catch (Exception $e) {
-                $commitResults->addError(new LogRow("error during stock update in commit", $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString()));
+                $message = $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString();
+                $this->applicationLogger->error("error during stock update in commit\n" . $message, [
+                    'component' => StoreSyndicatorBundle::LOGGER_COMPONENT_PREFIX . $this->config->getName(),
+                ]);
             }
         }
         $this->shopifyProductLinkingService->link($this->config, $changesStartTime);
-        return $commitResults;
     }
 }
