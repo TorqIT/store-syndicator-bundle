@@ -1,0 +1,14 @@
+mutation call($input: ProductInput!, $media: [CreateMediaInput!]) {
+  productCreate(input: $input, media: $media) {
+    product {
+      id
+      metafield(namespace: \"custom\", key: \"pimcore_id\") {
+        value
+      }
+    }
+    userErrors {
+      message
+      field
+    }
+  }
+}

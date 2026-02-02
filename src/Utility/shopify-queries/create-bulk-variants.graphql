@@ -1,0 +1,20 @@
+mutation productVariantsBulkCreate(
+  $productId: ID!
+  $variants: [ProductVariantsBulkInput!]!
+) {
+  productVariantsBulkCreate(productId: $productId, variants: $variants) {
+    productVariants {
+      id
+      inventoryItem {
+        id
+      }
+      metafield(namespace: "custom", key: "pimcore_id") {
+        value
+      }
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}

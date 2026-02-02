@@ -9,6 +9,19 @@ services:
     # if you need to do this, you can override this setting on individual services
     public: false
 
+  TorqIT\StoreSyndicatorBundle\EventListener\onPreSaveListener:
+    tags:
+      - { name: kernel.event_listener, event: pimcore.dataobject.preUpdate, method: onPreUpdate }
+      
+  TorqIT\StoreSyndicatorBundle\EventListener\onBeforeListLoad:
+    tags:
+      - { name: kernel.event_listener, event: pimcore.admin.object.list.beforeListLoad, method: onBeforeListLoad }
+
+
+  TorqIT\StoreSyndicatorBundle\EventListener\OnAssetSaveListener:
+    tags:
+      - { name: kernel.event_listener, event: pimcore.asset.preUpdate, method: removeShopifyFileId }
+
   # controllers are imported separately to make sure they're public
   # and have a tag that allows actions to type-hint services
   TorqIT\StoreSyndicatorBundle\Controller\:
@@ -45,3 +58,7 @@ services:
 #            - "@service_id"
 #            - "plain_value"
 #            - "%parameter%"
+
+  TorqIT\StoreSyndicatorBundle\MessageHandler\:
+    resource: "../../MessageHandler"
+    tags: ["messenger.message_handler"]
